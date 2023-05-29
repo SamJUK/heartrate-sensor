@@ -4,12 +4,25 @@ import sys
 import argparse
 import asyncio
 from bleak import BleakScanner, BleakClient
+from bleak.uuids import normalize_uuid_str
 
-async def list_all_devices():
-    scanner = BleakScanner()
-    devices = await scanner.discover()
-    for d in devices:
-        print(d)
+UUID_SVC_HR_MONITOR = normalize_uuid_str('180D')
+
+async def list_devices(svc_filter=[]):
+    devices_found = False
+    async with BleakScanner() as scanner:
+        await scanner.discover()
+        devices = scanner.discovered_devices_and_advertisement_data 
+        for device_id in devices:
+            [BLEDevice, Advert] = devices[device_id]
+            hasNoSvcFilters = isinstance(svc_filter, list) and len(svc_filter) < 1
+            svcFilterMatches = list(set(Advert.service_uuids).intersection(svc_filter))
+            if hasNoSvcFilters or len(svcFilterMatches) > 0:
+                devices_found = True
+                print(f'{device_id} {BLEDevice.name}')
+
+    if devices_found == False:
+        print('No Devices Found')
 
 async def discover(addr):
     print('Discovering Address: {}'.format(addr))
@@ -50,9 +63,12 @@ async def discover(addr):
 
 parser = argparse.ArgumentParser(description='BLE Device Discovery')
 parser.add_argument('-d', '--device', help='The device ID to discover')
+parser.add_argument('--list_all', action='store_true', help='List all devices')
 config = parser.parse_args()
 
 if config.device:
     asyncio.run(discover(config.device))
+elif config.list_all:
+    asyncio.run(list_devices())
 else:
-    asyncio.run(list_all_devices())
+    asyncio.run(list_devices(svc_filter=[UUID_SVC_HR_MONITOR]))
