@@ -3,12 +3,18 @@
 import sys
 import argparse
 import asyncio
-import bleak
+from bleak import BleakScanner, BleakClient
+
+async def list_all_devices():
+    scanner = BleakScanner()
+    devices = await scanner.discover()
+    for d in devices:
+        print(d)
 
 async def discover(addr):
     print('Discovering Address: {}'.format(addr))
 
-    async with bleak.BleakClient(addr, timeout=30) as client: 
+    async with BleakClient(addr, timeout=30) as client: 
         print('> Connected.')
 
         # Print Device Name
@@ -43,7 +49,10 @@ async def discover(addr):
 
 
 parser = argparse.ArgumentParser(description='BLE Device Discovery')
-parser.add_argument('-d', '--device', required=True, help='The device ID to discover')
+parser.add_argument('-d', '--device', help='The device ID to discover')
 config = parser.parse_args()
 
-asyncio.run(discover(config.device))
+if config.device:
+    asyncio.run(discover(config.device))
+else:
+    asyncio.run(list_all_devices())

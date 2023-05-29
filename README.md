@@ -4,7 +4,7 @@
 ### General
 If you do not know the address of your HR Monitor, put your device into broadcast mode and run the following command to list all BLE devices in range. 
 ```
-python discover_devices.py
+python discover.py
 ```
 
 Once you've found your address it should look something like `D2:82:35:C1:K5:34`. Run the following command replacing `{ADDR}` with the address copied in the previous step.
