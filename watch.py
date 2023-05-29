@@ -53,11 +53,27 @@ async def printDeviceName(client):
     name = await client.read_gatt_char(config.device_mapping['CHAR_DEVICE_NAME'])
     print('> Device: {}'.format(name.decode('utf-8')))
 
+def processFlags(flags):
+    return {
+        "BIT_HRV_FORMAT": flags & 1,
+        "BIT_SENSOR_CONTACT_FEATURE": (flags >> 2) & 1,
+        "BIT_SENSOR_CONTACT_STATUS": (flags >> 1) & 1,
+        "BIT_ENERGY_EXPENDED_STATUS": (flags >> 3) & 1,
+        "BIT_RR_INTERVAL": (flags >> 4) & 1
+    }
+
+def isBadHRReading(flags):
+    return flags['BIT_SENSOR_CONTACT_FEATURE'] == 1 and flags['BIT_SENSOR_CONTACT_STATUS'] == 0
+
 def processHeartrate(sender, data):
     global lastUpdate
     lastUpdate = datetime.now().timestamp()
 
-    [dunnoWhatThisIs, heartRate] = list(data)
+    [flagByte, heartRate] = list(data)
+    flags = processFlags(flagByte)
+    if isBadHRReading(flags):
+        heartRate = '-'
+
     dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(f'[{dt}] ♥ {heartRate}')
 
