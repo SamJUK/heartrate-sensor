@@ -34,6 +34,7 @@ def parseArguments():
     parser.add_argument('--device_type', default='garmin', help='The type of device')
     parser.add_argument('--file', action='store_true', help='Should write to file')
     parser.add_argument('--file_path', default='./out/hr.csv', help='Where should we write this file?')
+    parser.add_argument('--keep_history', action='store_true', help='Keep HR History in output file')
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose Logging')
     config = parser.parse_args()
     config.device_mapping = getDeviceMapping(config.device_type)
@@ -45,7 +46,8 @@ def verbose(message):
 def setupFile():
     if config.file:
         global fh
-        fh = open(config.file_path, 'w')
+        mode = 'a' if config.keep_history else 'w' 
+        fh = open(config.file_path, mode)
 
 async def printDeviceName(client):
     name = await client.read_gatt_char(config.device_mapping['CHAR_DEVICE_NAME'])
@@ -59,7 +61,7 @@ def processHeartrate(sender, data):
     dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(f'[{dt}] ♥ {heartRate}')
 
-    if fh != False:
+    if fh != None:
         fh.write(f'{heartRate}\n')
         fh.flush()
 
