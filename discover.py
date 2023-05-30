@@ -1,13 +1,11 @@
 #/usr/bin/env python3
 
-import sys
 import argparse
 import asyncio
 from bleak import BleakScanner, BleakClient
-from bleak.uuids import normalize_uuid_str
 from bleak.exc import BleakError
 
-UUID_SVC_HR_MONITOR = normalize_uuid_str('180D')
+from uuids import SVC_HR_MEASUREMENT, CHAR_DEVICE_NAME
 
 async def list_devices(svc_filter=[]):
     devices_found = False
@@ -33,7 +31,7 @@ async def discover(addr):
 
         # Print Device Name
         try:
-            name = await client.read_gatt_char('00002a00-0000-1000-8000-00805f9b34fb')
+            name = await client.read_gatt_char(CHAR_DEVICE_NAME)
             print('> Device: {}'.format(name.decode('utf-8')))
         except BleakError: 
             pass
@@ -75,4 +73,4 @@ if config.device:
 elif config.list_all:
     asyncio.run(list_devices())
 else:
-    asyncio.run(list_devices(svc_filter=[UUID_SVC_HR_MONITOR]))
+    asyncio.run(list_devices(svc_filter=[SVC_HR_MEASUREMENT]))
