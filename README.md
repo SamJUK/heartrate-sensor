@@ -21,10 +21,3 @@ You can list out all Characteristics/Descriptors/Services for the device with th
 ```
 python discover.py -d {ADDR}
 ```
-
-## TODO: 
-- [ ] Look into other datastore options (sqllite? Redis?)
-- [ ] Networking, Webhooks? Public Datastore?
-- [ ] Fix Reconnection, if broadcast is paused & resumed at all, it dies 
-- [x] Auto discovery of BLE HR devices?
-- [ ] Starting the script can be a bit flakey at times? Whats causing this?
