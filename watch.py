@@ -3,11 +3,12 @@
 import argparse
 import sys
 import asyncio
-import bleak
 import json
 from json.decoder import JSONDecodeError
 from time import sleep
 from datetime import datetime
+from bleak import BleakClient
+from bleak.exc import BleakError
 
 lastUpdate = datetime.now().timestamp()
 monitoring = True
@@ -101,9 +102,12 @@ async def monitorHR(client):
 
 async def main():
     print('Watching Address: {}'.format(config.device))
-    async with bleak.BleakClient(config.device, timeout=10) as client:
+    async with BleakClient(config.device, timeout=10) as client:
         print('> Connected.')
-        await printDeviceName(client)
+        try:
+            await printDeviceName(client)
+        except BleakError: 
+            pass
 
         while monitoring:
             await monitorHR(client)

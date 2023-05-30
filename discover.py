@@ -5,6 +5,7 @@ import argparse
 import asyncio
 from bleak import BleakScanner, BleakClient
 from bleak.uuids import normalize_uuid_str
+from bleak.exc import BleakError
 
 UUID_SVC_HR_MONITOR = normalize_uuid_str('180D')
 
@@ -31,8 +32,11 @@ async def discover(addr):
         print('> Connected.')
 
         # Print Device Name
-        name = await client.read_gatt_char('00002a00-0000-1000-8000-00805f9b34fb')
-        print('> Device: {}'.format(name.decode('utf-8')))
+        try:
+            name = await client.read_gatt_char('00002a00-0000-1000-8000-00805f9b34fb')
+            print('> Device: {}'.format(name.decode('utf-8')))
+        except BleakError: 
+            pass
 
         # List Services
         print('Services:')
