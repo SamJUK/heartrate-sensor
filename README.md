@@ -26,5 +26,5 @@ python discover.py -d {ADDR}
 - [ ] Look into other datastore options (sqllite? Redis?)
 - [ ] Networking, Webhooks? Public Datastore?
 - [ ] Fix Reconnection, if broadcast is paused & resumed at all, it dies 
-- [ ] Auto discovery of BLE HR devices?
+- [x] Auto discovery of BLE HR devices?
 - [ ] Starting the script can be a bit flakey at times? Whats causing this?
