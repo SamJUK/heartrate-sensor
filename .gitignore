@@ -1,3 +1,10 @@
+.DS_STORE
+
+.vs_code/
+.idea/
+
 __pycache__
-set_device_ids.ps1
-out/hr.csv
+.venv/
+
+var/*
+!var/.gitkeep

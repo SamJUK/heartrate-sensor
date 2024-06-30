@@ -1,4 +1,6 @@
-bleak==0.20.2
-numpy==1.24.3
-PyQt5==5.15.9
-pyqtgraph==0.13.3
+asyncio==3.4.3
+bleak==0.22.2
+pyobjc-core==10.3.1
+pyobjc-framework-Cocoa==10.3.1
+pyobjc-framework-CoreBluetooth==10.3.1
+pyobjc-framework-libdispatch==10.3.1
